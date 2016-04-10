@@ -18,7 +18,7 @@ var vue = new Vue({
       url = 'https://jsonp.afeld.me/?url=https://go.berniesanders.com/page/event/search_results?zip_radius[1]=1000000&country=US&radius_unit=mi&format=json&orderby=zip_radius&zip_radius[0]=' + this.zipCode;
       $.getJSON(url, function(data) {
         debugger;
-        this.events.push(data);
+        this.events.push(data.results);
       });
     },
 
