@@ -3,6 +3,10 @@ function fetchKey(key) {
   return localStorage.getItem(key);
 }
 
+function pollLocationStored() {
+  return !!fetchKey('pollLocationName');
+}
+
 function saveKey(key, value) {
   localStorage.setItem(key, value);
 }
@@ -41,18 +45,18 @@ var vue = new Vue({
 
     noPollLocation: function() {
       return !this.pollLocation;
-    }
+    },
   },
 
   data: {
     events: [],
     findPollData: '',
-    message: 'The Bernie Bulletin',
+    heading: 'The Bernie Bulletin',
     news: [
       { title: 'NJ Voter Affiliation Deadline', description: 'You must be registered as a Democrat by April 13!' },
       { title: 'New York Primary', description: 'The New York primary is on April 13th -- make sure know your polling location!' }
     ],
-    pollLocation: false,
+    pollLocation: pollLocationStored(),
     pollLocationName: fetchKey('pollLocationName'),
     pollLocationLine1: fetchKey('pollLocationLine1'),
     pollLocationLine2: fetchKey('pollLocationLine2'),
