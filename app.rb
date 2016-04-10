@@ -1,9 +1,10 @@
 require 'sinatra/base'
+require 'tilt/erb'
 
 module Interactor
   class Application < Sinatra::Base
     get '/' do
-      'hi'
+      erb :index
     end
   end
 end
