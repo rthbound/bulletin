@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<head>
+  <link href="https://coders.forsanders.com/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.21/vue.min.js"></script>
+  <style>
+    .center {
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <h1 class="center">{{ message }}</h1>
+    <div class="row">
+      <div class="col-md-4">
+        <h3>My Information:</h3>
+        <hr>
+
+        <ul>
+          <li> Current zip code: {{ zipCode }} </li>
+          <li v-if="pollLocation">
+            Your polling location is: {{ pollLocationName }} ({{ pollLocationLine1 }}, {{ pollLocationLine2 }})
+          </li>
+        </ul>
+
+        <p v-if="noPollLocation()">
+          <input class="form-control" id="findPoll" v-model="findPollData" v-on:keyup.enter="findPoll" placeholder='Enter your address here'>
+          <button class="btn btn-primary btn-md" v-on:click="findPoll">Find my polling location</button>
+        </p>
+
+      </div>
+
+      <div class="col-md-4">
+        <h3>Local Events:</h3>
+        <hr>
+
+        <ul>
+          <li v-for="event in events">
+            {{ event.title }}
+          </li>
+        </ul>
+      </div>
+
+      <div class="col-md-4">
+        <h3>National News:</h3>
+        <hr>
+
+        <ul>
+          <li v-for="item in news">
+            {{ item.title }} -- {{ item.description }}
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+    <script src="app.js"></script>
+  <script> vue.getZipCode(); </script>
+  <script> vue.findEvents(); </script>
+<body>
