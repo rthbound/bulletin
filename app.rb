@@ -6,5 +6,9 @@ module Interactor
     get '/' do
       erb :index
     end
+
+    get '/redo' do
+      erb :redo
+    end
   end
 end

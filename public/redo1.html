@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<head>
+  <link href="https://coders.forsanders.com/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.21/vue.min.js"></script>
+  <style>
+    .center {
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <h1 class="center">{{ message }}</h1>
+    <div class="row">
+      <div class="col-md-4">
+        <h3>My Information:</h3>
+        <hr>
+
+        <ul>
+          <li> Current zip code: {{ zipCode }} </li>
+          <li v-if="pollLocation">
+            Your polling location is: {{ pollLocationName }} ({{ pollLocationLine1 }}, {{ pollLocationLine2 }})
+          </li>
+        </ul>
+
+        <p v-if="noPollLocation()">
+          <input class="form-control" id="findPoll" v-model="findPollData" v-on:keyup.enter="findPoll" placeholder='Enter your address here'>
+          <button class="btn btn-primary btn-md" v-on:click="findPoll">Find my polling location</button>
+        </p>
+
+      </div>
+
+      <div class="col-md-4">
+        <h3>Local Events:</h3>
+        <hr>
+
+        <ul>
+          <li v-for="event in events">
+            {{ event.title }}
+          </li>
+        </ul>
+      </div>
+
+      <div class="col-md-4">
+        <h3>National News:</h3>
+        <hr>
+
+        <ul>
+          <li v-for="item in news">
+            {{ item.title }} -- {{ item.description }}
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // localStorage helpers:
+    function fetchKey(key) {
+      return localStorage.getItem(key);
+    }
+
+    function saveKey(key, value) {
+      localStorage.setItem(key, value);
+    }
+  var vue = new Vue({
+    el: '#app',
+    methods: {
+      findEvents: function() {
+        url = 'https://jsonp.afeld.me/?url=https://go.berniesanders.com/page/event/search_results?zip_radius[1]=1000000&country=US&radius_unit=mi&format=json&orderby=zip_radius&zip_radius[0]=' + this.zipCode;
+        $.getJSON(url, function(data) {
+          debugger;
+          this.events.push(data);
+        });
+      },
+
+      findPoll: function() {
+        url = 'https://ppapi.democrats.org/api?api_key=MjBhNGFhNzY5YTk5ZjkyY2JiN2I1ZjE1' + '&address=' + this.findPollData.trim();
+        $.getJSON(url, function(data) {
+          if (data.status !== 'success') {
+            alert("Sorry! We can't find a polling location for that address. :(");
+          } else {
+            vue.pollLocationName = data.pollingLocation.locationName;
+            vue.pollLocationLine1 = data.pollingLocation.line1;
+            vue.pollLocationLine2 = data.pollingLocation.city + ', ' + data.pollingLocation.state + ' ' + data.pollingLocation.zip;
+            vue.pollLocation = true;
+            vue.findPollData = '';
+          }
+        });
+      },
+
+      getZipCode: function() {
+        if (!this.zipCode) {
+          this.zipCode = window.prompt('What is your zip code?', '');
+        }
+      },
+
+      noPollLocation: function() {
+        return !this.pollLocation;
+      }
+    },
+
+    data: {
+      events: [],
+      findPollData: '',
+      message: 'Feel the Bern!',
+      news: [
+        { title: 'NJ Voter Affiliation Deadline', description: 'You must be registered as a Democrat by April 13!' },
+        { title: 'New York Primary', description: 'The New York primary is on April 13th -- make sure know your polling location!' }
+      ],
+      pollLocation: false,
+      pollLocationName: fetchKey('pollLocationName'),
+      pollLocationLine1: fetchKey('pollLocationLine1'),
+      pollLocationLine2: fetchKey('pollLocationLine2'),
+      zipCode: fetchKey('zipCode')
+    },
+
+    ready: function() {
+      this.$watch('pollLocationName', function(value){
+        saveKey('pollLocationName', value);
+      });
+
+      this.$watch('pollLocationLine1', function(value){
+        saveKey('pollLocationLine1', value);
+      });
+
+      this.$watch('pollLocationLine2', function(value){
+        saveKey('pollLocationLine2', value);
+      });
+
+      this.$watch('zipCode', function(value){
+        saveKey('zipCode', value);
+      });
+    },
+  })
+
+  vue.getZipCode();
+  vue.findEvents();
+  </script>
+<body>
