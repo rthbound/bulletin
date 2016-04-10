@@ -47,7 +47,7 @@ var vue = new Vue({
   data: {
     events: [],
     findPollData: '',
-    message: 'Feel the Bern!',
+    message: 'The Bernie Bulletin',
     news: [
       { title: 'NJ Voter Affiliation Deadline', description: 'You must be registered as a Democrat by April 13!' },
       { title: 'New York Primary', description: 'The New York primary is on April 13th -- make sure know your polling location!' }
